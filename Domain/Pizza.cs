@@ -14,8 +14,12 @@ namespace Javi.Domain
         }
         private double _calculatePrice()
         {
-            // TODO: implementarlo
-            return 0.0;
+            private double CosteFijo = 5.00;
+            private double CosteAcumulado = 0.0;
+            foreach (var ingrediente in PizzaIngredients){
+                CosteAcumulado += ingrediente.Price;
+            }
+            return CosteAcumulado + CosteFijo;
         }
     }
 }

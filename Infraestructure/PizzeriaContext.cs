@@ -8,6 +8,7 @@ namespace Javi.Infraestructure
         public DbSet<Pizza> Pizza { get; set; }
         public DbSet<Ingredient> Ingredient { get; set; }
         public DbSet<PizzaIngredient> PizzaIngredient { get; set; }
+        public Dbset<User> User { get; set; }
         public PizzeriaContext(DbContextOptions<PizzeriaContext> options)
             : base(options)
         {
@@ -39,6 +40,20 @@ namespace Javi.Infraestructure
                     .HasOne<Ingredient>(pi => pi.Ingredient)
                     .WithMany()
                     .HasForeignKey(pi => pi.IngredientId);
+            });
+            modelBuilder.Entity<User>(user =>
+            {
+                user.HasKey(u => u.Id);
+                user.Property(u => u.Name).IsRequired();
+                user.Property(u => u.email).IsRequired();
+                                
+            });
+            modelBuilder.Entity<Comment>(comment =>
+            {
+               comment.HasKey(c => c.Id);
+               comment.Property(c => c.User).IsRequired();
+               comment.Property(c => c.Text).IsRequired();
+               comment.Property(c => c.Pizza).IsRequired();
             });
         }
 
