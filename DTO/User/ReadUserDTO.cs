@@ -1,3 +1,4 @@
+using System;
 using Javi.Domain;
 
 namespace Javi.DTO

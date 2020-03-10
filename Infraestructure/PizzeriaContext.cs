@@ -8,7 +8,8 @@ namespace Javi.Infraestructure
         public DbSet<Pizza> Pizza { get; set; }
         public DbSet<Ingredient> Ingredient { get; set; }
         public DbSet<PizzaIngredient> PizzaIngredient { get; set; }
-        public Dbset<User> User { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<Comment> Comment { get; set; }
         public PizzeriaContext(DbContextOptions<PizzeriaContext> options)
             : base(options)
         {
@@ -28,6 +29,8 @@ namespace Javi.Infraestructure
                 pizza.HasKey(p => p.Id);
                 pizza.Property(p => p.Name).IsRequired();
                 pizza.Ignore(p => p.Price);
+                pizza.HasMany<Comment>(p => p.Comments)
+                .WithOne();
             });
             modelBuilder.Entity<PizzaIngredient>(pi =>
             {
@@ -45,15 +48,18 @@ namespace Javi.Infraestructure
             {
                 user.HasKey(u => u.Id);
                 user.Property(u => u.Name).IsRequired();
-                user.Property(u => u.email).IsRequired();
-                                
+                user.Property(u => u.Email).IsRequired();
+                user.Property(u => u.Password).IsRequired();
+
             });
             modelBuilder.Entity<Comment>(comment =>
             {
-               comment.HasKey(c => c.Id);
-               comment.Property(c => c.User).IsRequired();
-               comment.Property(c => c.Text).IsRequired();
-               comment.Property(c => c.Pizza).IsRequired();
+                comment.HasKey(c => c.Id);
+                comment.Property(c => c.Text).IsRequired();
+                comment.HasOne<User>(c => c.User)
+                .WithMany();
+
+
             });
         }
 
