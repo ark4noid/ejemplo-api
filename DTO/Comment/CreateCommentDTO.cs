@@ -1,13 +1,15 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using Javi.Domain;
 
 namespace Javi.DTO
 {
     public class CreateCommentDTO
     {
         [Required]
-        public User User { get; set; }
+        public Guid UserId { get; set; }
         [Required]
-        public Pizza Pizza { get; set; }
+        public Guid PizzaId { get; set; }
         [Required]
         public string Text { get; set; }
     }
