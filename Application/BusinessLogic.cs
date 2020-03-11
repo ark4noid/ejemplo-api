@@ -17,12 +17,7 @@ namespace Javi.Application
         }
         public ReadUserDTO CreateUser(CreateUserDTO dto)
         {
-            var user = new User();
-            user.Id = Guid.NewGuid();
-            user.Name = dto.Name;
-            user.Email = dto.Email;
-            user.Password = dto.Password;
-
+            var user = _createUser(dto);
             _context.User.Add(user);
             _context.SaveChanges();
             _context.Dispose();
@@ -35,10 +30,15 @@ namespace Javi.Application
             // buscar la pizza
             var pizza = _context.Pizza.Find(dto.PizzaId);
             // crear comentario 
+           var comment = _createComment(dto, user);
             // añadir comentario a la pizza
-            // gaurdar el comentario
+            //guardar el comentario
+            _context.Comment.Add(comment);
             // guardar y dispose del context
+            _context.SaveChanges();
+            _context.Dispose();
             // devolver readCommentDTO
+            return _createReadCommentDTO(comment);
         }
         public ReadPizzaDTO GetPizzaByID(Guid Id)
         {
@@ -54,20 +54,28 @@ namespace Javi.Application
         }
         public ReadPizzaDTO CreatePizza(CreatePizzaDTO dto)
         {
+
+            // crear pizza
             var pizza = new Pizza();
             pizza.Id = Guid.NewGuid();
             pizza.Name = dto.Name;
             pizza.PizzaIngredients = new List<PizzaIngredient>();
+            pizza.Comments = new List<Comment>();
+            // add pizza ingredients
             foreach (var ingredientId in dto.Ingredients)
             {
                 var ingredient = _context.Ingredient.Find(ingredientId);
+                // createPizzaIngredient
                 var pizzaIngredient = new PizzaIngredient();
                 pizzaIngredient.Pizza = pizza;
                 pizzaIngredient.Ingredient = ingredient;
                 pizzaIngredient.PizzaId = pizza.Id;
                 pizzaIngredient.IngredientId = ingredient.Id;
+                //
                 pizza.PizzaIngredients.Add(pizzaIngredient);
             }
+            // var pizza = _cretePizza(dto);
+            // _addPizzaIngredients(pizza, dto.Ingredients)
             _context.Pizza.Add(pizza);
             _context.SaveChanges();
             _context.Dispose();
@@ -82,18 +90,26 @@ namespace Javi.Application
         }
         private User _createUser(CreateUserDTO dto)
         {
-
+            var user = new User();
+            user.Id = Guid.NewGuid();
+            user.Name = dto.Name;
+            user.Email = dto.Email;
+            user.Password = dto.Password;
+            return user;
         }
         private ReadUserDTO _createReadUserDTO(User user)
         {
 
         }
-        private Comment _createComment(CreateCommentDTO dto)
+        private Comment _createComment(CreateCommentDTO dto, User user)
         {
-
+           var comment =  new Comment();
+            comment.Text = dto.Text;
+            comment.User = user;
+            return comment;
         }
         private ReadCommentDTO _createReadCommentDTO(Comment comment)
-        {
+        {   
 
         }
         private ReadPizzaDTO _createReadPizzaDTO(Pizza pizza)
